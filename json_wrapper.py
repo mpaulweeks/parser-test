@@ -4,7 +4,7 @@ class JSON_Wrapper:
 	
 	parser = Parser()
 
-	def convert(self, file):
+	def json(self, file):
 		entries = []
 		error_lines = []
 		line_number = 0
