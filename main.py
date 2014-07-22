@@ -5,30 +5,41 @@ import sys
 import operator
 
 wrapper = JSON_Wrapper()
-file = sys.stdin
+file_in = sys.stdin
 
-json = wrapper.json(file)
+# convert input into json
+json = wrapper.json(file_in)
 entries = json["entries"]
 errors = json["errors"]
 
+# format output with whitespace and such
 out = '{\n'
 out += '  "entries": [\n'
-for dict in sorted(entries, key=operator.itemgetter('lastname', 'firstname')):
+sorted_entries = sorted(entries, key=operator.itemgetter('lastname', 'firstname'))
+for dict in sorted_entries:
 	out += '    {\n'
-	for key in sorted(dict):
-		out += '      "' + key + '": "' + dict[key] + '",\n'
+	sorted_dict = sorted(dict)
+	for key in sorted_dict:
+		out += '      "' + key + '": "' + dict[key] + '"'
+		if key != sorted_dict[-1]:
+			out += ','
+		out += '\n'
 	out += '    }'
-	if dict != entries[-1]:
+	if dict != sorted_entries[-1]:
 		out += ','
 	out += '\n'
 out += '  ],\n'
 out += '  "errors": [\n'
-for num in sorted(errors):
+sorted_errors = sorted(errors)
+for num in sorted_errors:
 	out += '      ' + str(num)
-	if num != errors[-1]:
+	if num != sorted_errors[-1]:
 		out += ','
 	out += '\n'
 out += '  ]\n'
 out += '}'
 
-print out
+# write to file
+file_out = open('result.out', 'w')
+file_out.write(out)
+file_out.close()
