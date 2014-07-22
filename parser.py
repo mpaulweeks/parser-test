@@ -5,7 +5,14 @@ class Parser:
 	# Case3: Firstname, Lastname, 10013, 646 111 0101, Green
 
 	def clean_phonenumber(self, raw):
-		return raw	
+		digits = ""
+		for char in raw:
+			if char.isdigit():
+				digits += char
+		if len(digits) != 10:
+			return ""
+		formatted = digits[0:3] + '-' + digits[3:6] + '-' + digits[6:10]
+		return formatted
 
 	def parse_line(self, raw):
 		text = raw.rstrip()
@@ -17,6 +24,7 @@ class Parser:
 		phonenumber = ""
 		zipcode = ""
 		
+		# parse fields
 		if len(chunks) == 4:
 			#Case2
 			firstname, junk, lastname = chunks[0].partition(' ')
@@ -39,8 +47,13 @@ class Parser:
 				color = chunks[3]
 				zipcode = chunks[4]
 		
+		# clean and check for errors
 		phonenumber = self.clean_phonenumber(phonenumber)
 		
+		if len(zipcode) != 5:
+			zipcode = ""
+		
+		# return
 		if not (firstname and lastname and phonenumber and color and zipcode):
 			return {"error": True}
 		else:
